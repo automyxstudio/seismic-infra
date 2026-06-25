@@ -69,6 +69,10 @@ services:
       timeout: 5s
       retries: 5
       start_period: 15s
+    volumes:
+      - parquet_data:/data/parquet
+    environment:
+      PARQUET_DATA_DIR: /data/parquet
 
   # ---------------------------------------------------------------------------
   # Servicio de Ingesta (loop cada 3 min)
@@ -107,12 +111,14 @@ services:
       AIRFLOW__CORE__FERNET_KEY: ${AIRFLOW__CORE__FERNET_KEY}
       MONGO_URI: ${MONGO_URI}
       PYTHONPATH: /opt/seismic-backend
+      PARQUET_DATA_DIR: /data/parquet
     ports:
       - "8080:8080"
     volumes:
       - ../seismic-backend/src/airflow/dags:/opt/airflow/dags
       - ../seismic-backend:/opt/seismic-backend
       - airflow_data:/opt/airflow
+      - parquet_data:/data/parquet
     networks:
       - seismic_net
     depends_on:
@@ -193,6 +199,7 @@ volumes:
   airflow_data:
   prometheus_data:
   grafana_data:
+  parquet_data:    # data lake analítico — compartido entre api y airflow
 
 # -----------------------------------------------------------------------------
 # Red interna — los servicios se comunican por nombre
