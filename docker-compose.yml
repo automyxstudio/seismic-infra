@@ -100,16 +100,18 @@ services:
     env_file:
       - .env
     environment:
-      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__CORE__EXECUTOR: SequentialExecutor
       AIRFLOW__CORE__LOAD_EXAMPLES: "False"
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: ${AIRFLOW__DATABASE__SQL_ALCHEMY_CONN}
       AIRFLOW__WEBSERVER__SECRET_KEY: ${AIRFLOW__WEBSERVER__SECRET_KEY}
       AIRFLOW__CORE__FERNET_KEY: ${AIRFLOW__CORE__FERNET_KEY}
       MONGO_URI: ${MONGO_URI}
+      PYTHONPATH: /opt/seismic-backend
     ports:
       - "8080:8080"
     volumes:
       - ../seismic-backend/src/airflow/dags:/opt/airflow/dags
+      - ../seismic-backend:/opt/seismic-backend
       - airflow_data:/opt/airflow
     networks:
       - seismic_net
